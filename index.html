@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Plus</title>
+    <link rel="icon" href="./assets/logowhite.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+<body class="bg-gradient-to-br from-[#98b5a4] to-[#162A2C] text-center">
+
+<!-- Navbar Section (Now Below Countdown) -->
+<nav class="text-black py-2 w-full px-4 md:px-12 pb-0 relative flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+    <!-- Logo -->
+    <div class="w-auto h-auto">
+        <img src="./assets/logowhite.png" alt="Banner" class="h-[100px] w-[100px] md:h-[150px] md:w-[150px]">
+    </div>
+
+    <!-- Countdown -->
+    <div class="text-white text-center flex flex-wrap gap-4 justify-center items-center lg:pl-[300px]">
+        <div>
+            <div class="w-16 h-16 flex flex-col bg-[#162A2C] justify-center items-center text-lg font-bold rounded-full" id="hours">00</div>
+            <p>Hours</p>
+        </div>
+        <div>
+            <div class="w-16 h-16 flex flex-col bg-[#162A2C] justify-center items-center text-lg font-bold rounded-full" id="minutes">00</div>
+            <p>Minutes</p>
+        </div>
+        <div>
+            <div class="w-16 h-16 flex flex-col bg-[#162A2C] justify-center items-center text-lg font-bold rounded-full" id="seconds">00</div>
+            <p>Seconds</p>
+        </div>
+    </div>
+
+
+    <!-- Navigation Links -->
+    <ul class="flex flex-wrap justify-center md:justify-end px-4 md:px-12 space-x-4 md:space-x-8 text-md md:text-lg font-semibold text-white">
+        <li><a href="#about-section" class="hover:text-black"><i class="fa-solid fa-location-dot"></i> About Us</a></li>
+        <li><a href="#buynow-section" class="hover:text-black"><i class="fa-solid fa-cart-plus"></i> Buy Now</a></li>
+        <li><a href="#feedbacks-section" class="hover:text-black"><i class="fa-solid fa-check"></i> Feedbacks</a></li>
+        <li><a href="#more-section" class="hover:text-black"><i class="fa-solid fa-circle-info"></i> More</a></li>
+    </ul>
+</nav>
+
+<!-- Main Section -->
+<div class="text-white px-4 md:px-20 pt-2 relative flex flex-col md:flex-row items-center text-center md:text-left space-y-6 md:space-y-0">
+    <!-- Left Content (Text & Button) -->
+    <div class="flex-1 pr-0 md:pr-10">
+        <h2 class="text-2xl md:text-4xl font-bold">INVESTMENT IS THE FUTURE!</h2>
+        <p class="mt-2 text-base md:text-lg">GROW YOUR WEALTH WITH US...</p>
+        <a class="rounded-full block mt-6" href="pay.html">
+            <button class="px-6 py-3 bg-[#162A2C] hover:bg-[#98B5A4] text-white text-lg font-semibold rounded-full shadow-md transition w-full md:w-[500px]">
+                BUY NOW!
+            </button>
+        </a>
+    </div>
+
+    <!-- Right Image -->
+    <div class="flex-1 flex justify-center md:justify-end">
+        <img src="assets/bookcovered.png" alt="Banner" class="w-48 md:w-96 h-auto object-contain rounded-xl">
+    </div>
+</div>
+
+<!-- Secrets Section -->
+<div class="text-white py-10 px-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <!-- Secret Cards -->
+        <div class="flex flex-col items-center">
+            <div class="text-4xl"><i class="fa-solid fa-bullseye"></i></div>
+            <h3 class="font-bold mt-2 text-lg">SECRET #1</h3>
+            <p class="text-sm mt-1">Find your target.</p>
+        </div>
+        <div class="flex flex-col items-center">
+            <div class="text-4xl"><i class="fa-solid fa-compass"></i></div>
+            <h3 class="font-bold mt-2 text-lg">SECRET #2</h3>
+            <p class="text-sm mt-1">Choose the path to the Dream.</p>
+        </div>
+        <div class="flex flex-col items-center">
+            <div class="text-4xl"><i class="fa-solid fa-road"></i></div>
+            <h3 class="font-bold mt-2 text-lg">SECRET #3</h3>
+            <p class="text-sm mt-1">Hit the Road.</p>
+        </div>
+        <div class="flex flex-col items-center">
+            <div class="text-4xl"><i class="fa-solid fa-check-square"></i></div>
+            <h3 class="font-bold mt-2 text-lg">SECRET #4</h3>
+            <p class="text-sm mt-1">Make Your Dreams Come True!</p>
+        </div>
+    </div>
+</div>
+
+<!-- Dream Section -->
+<section class="text-center pt-16 pb-8 px-4 sm:px-6 bg-white w-full">
+    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold">
+        Every Reality Starts with a Dream!
+    </h2>
+    <p class="text-base sm:text-lg text-gray-600 mt-4 leading-relaxed">
+        Big achievements start with small steps. It is important not only to dream, but also to act.<br>
+        Every day is an opportunity to get closer to your goal, change your life, and create the reality you have always dreamed of.
+    </p>
+
+    <!-- Bull vs. Bear Image -->
+    <div class="w-full max-w-md sm:max-w-lg md:max-w-2xl mt-8 mb-10 mx-auto px-2">
+        <img
+                src="./assets/bearish and bullish market .jpg"
+                alt="Bull and Bear"
+                class="rounded-lg shadow-lg w-full h-auto"
+        />
+    </div>
+</section>
+
+
+<section class=" text-white py-16 px-4">
+        <div class="max-w-5xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold">GET Masters Concept & Trade Like the PRO!</h2>
+            <p class="mt-2 text-lg text-gray-300">
+                Learn how institutional traders move the markets and start trading with confidence.
+            </p>
+        </div>
+    
+        <div class="text-left">
+            <div class="max-w-5xl mx-auto mt-10 space-y-8">
+                <!-- Market structure & liquidity zones -->
+                <div class="flex flex-col md:flex-row items-center bg-gray-900 p-6 rounded-xl shadow-lg">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-semibold flex items-center">
+                            ✅ Market structure & liquidity zones
+                        </h3>
+                        <p class="mt-2 text-gray-400">
+                            Discover how institutions manipulate price movements, identify key liquidity zones, and position 
+                            yourself ahead of the market for smarter trades.
+                        </p>
+                    </div>
+                    <div class="w-full md:w-1/3 mt-4 md:mt-0">
+                        <img src="./assets/Bull&Bear.jpg" alt="Institutional moves" class="rounded-lg shadow-md">
+                    </div>
+                </div>
+        
+                <!-- Identifying institutional moves -->
+                <div class="flex flex-col md:flex-row items-center bg-gray-900 p-6 rounded-xl shadow-lg">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-semibold flex items-center">
+                            ✅ Identifying institutional moves
+                        </h3>
+                        <p class="mt-2 text-gray-400">
+                            Learn to recognize the hidden patterns of money, follow their trades, and avoid retail trader traps 
+                            for more consistent profits.
+                        </p>
+                    </div>
+                    <div class="w-full md:w-1/3 mt-4 md:mt-0">
+                        <img src="./assets/richguywithtablet.webp" alt="Institutional moves" class="rounded-lg shadow-md">
+                    </div>
+                </div>
+            </div>
+            <div class="max-w-5xl mx-auto mt-10 space-y-8">
+                <!-- Precision entries & risk management -->
+                <div class="flex flex-col md:flex-row items-center bg-gray-900 p-6 rounded-xl shadow-lg">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-semibold flex items-center">
+                            ✅ Precision entries & risk management
+                        </h3>
+                        <p class="mt-2 text-gray-400">
+                            Execute high-accuracy trades with confidence using advanced entry techniques while minimizing risk 
+                            and protecting your capital like a pro.
+                        </p>
+                    </div>
+                    <div class="w-full md:w-1/3 mt-4 md:mt-0">
+                        <img src="./assets/stock-market-analytics-charts.webp" alt="Risk management" class="rounded-lg shadow-md">
+                    </div>
+                </div>
+        
+                <!-- Live case studies & trade breakdowns -->
+                <div class="flex flex-col md:flex-row items-center bg-gray-900 p-6 rounded-xl shadow-lg">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-semibold flex items-center">
+                            ✅ Live case studies & trade breakdowns
+                        </h3>
+                        <p class="mt-2 text-gray-400">
+                            Watch real trade breakdowns, analyze winning strategies, and apply proven techniques to improve 
+                            your trading success.
+                        </p>
+                    </div>
+                    <div class="w-full md:w-1/3 mt-4 md:mt-0">
+                        <img src="./assets/artificial-intelligence-technology.webp" alt="Case studies" class="rounded-lg shadow-md">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white py-16 px-4" id="about-section">
+        <div class="max-w-6xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-900">About Us</h2>
+            <p class="text-gray-500 mt-2">Say Hello to Our Developers!</p>
+        </div>
+    
+        <div class="max-w-6xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Team Member 1 -->
+            <div class="bg-gray-100 p-6 rounded-lg text-center shadow-md">
+                <img src="./assets/sophiecarter.jpg" alt="Sophia Carter" class="w-full rounded-lg">
+                <h3 class="text-xl font-semibold mt-4">Sophia Carter</h3>
+                <p class="text-gray-500 mt-2">
+                    With years of experience in financial markets, Sophia specializes in identifying money movements and 
+                    helping traders refine their strategies.
+                </p>
+            </div>
+    
+            <!-- Team Member 2 -->
+            <div class="bg-gray-100 p-6 rounded-lg text-center shadow-md">
+                <img src="./assets/michaelreynolds.jpg" alt="Michael Reynolds" class="w-full rounded-lg">
+                <h3 class="text-xl font-semibold mt-4">Michael Reynolds</h3>
+                <p class="text-gray-500 mt-2">
+                    A trading expert with a deep understanding of market structure and institutional strategies, Michael 
+                    empowers traders to navigate the markets with confidence.
+                </p>
+            </div>
+    
+            <!-- Team Member 3 -->
+            <div class="bg-gray-100 p-6 rounded-lg text-center shadow-md">
+                <img src="./assets/danielnakamura.jpg" alt="Daniel Nakamura" class="w-full rounded-lg">
+                <h3 class="text-xl font-semibold mt-4">Daniel Nakamura</h3>
+                <p class="text-gray-500 mt-2">
+                    Passionate about precision trading and risk management, Daniel breaks down complex strategies into 
+                    actionable insights for traders at all levels.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section class="bg-white py-16 px-4">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center">
+            <!-- Изображение слева -->
+            <div class="md:w-1/2">
+                <img src="./assets/richdude.webp" alt="Trading Offer" class="w-full rounded-lg shadow-lg">
+            </div>
+    
+            <!-- Текст справа -->
+            <div class="md:w-1/2 md:pl-10 mt-6 md:mt-0" id="buynow-section">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                    📉 LEARN STRATEGIES, READ THE MARKET, MAKE BETTER DECISIONS!
+                </h2>
+                <p class="mt-4 text-gray-700">
+                    🔥 <strong>Make Profitable Trades with Us!</strong> 🔥<br>
+                    Follow the footsteps of professional traders with us. Are you ready to make more conscious and profitable trades by understanding market movements better? 🚀
+                </p>
+                <h3 class="mt-6 text-lg font-semibold text-gray-900 flex items-center">
+                    ⏳ PRICES WILL INCREASE SOON! REGISTER TODAY AND BENEFIT FROM A SPECIAL DISCOUNT.
+                </h3>
+                <ul class="mt-4 space-y-2 text-gray-700">
+                    <li class="flex items-center">✅ Professional Analysis</li>
+                    <li class="flex items-center">✅ Comprehensive Educational Content</li>
+                    <li class="flex items-center">✅ Stand Out in the Market with Real Strategies</li>
+                </ul>
+    
+                <!-- Кнопка -->
+                <a class="rounded-full" href="pay.html">
+                    <button class="mt-6 w-full md:w-auto bg-[#162A2C] hover:bg-[#98B5A4] text-white font-bold py-3 px-6 rounded-full text-lg shadow-md transition-all duration-100">
+                        BUY NOW!
+                    </button>
+                </a>
+            </div>
+        </div>
+    </section>
+        
+    <div class=" text-white py-16">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+            <div>
+                <h2 class="text-4xl font-bold counter-year" data-target="1999">0</h2>
+                <p class="font-semibold">🚀 YEARS OF MARKET INSIGHTS</p>
+                <p class="mt-2 text-gray-300">Bringing over two decades of trading expertise to help you succeed.</p>
+            </div>
+            <div>
+                <h2 class="text-4xl font-bold counter" data-target="200000" data-increment="13" data-steps="16">0</h2>
+                <p class="font-semibold">📈 SUCCESSFUL TRADES ANALYZED</p>
+                <p class="mt-2 text-gray-300">Learn from real-world case studies and high-probability setups.</p>
+            </div>
+            <div>
+                <h2 class="text-4xl font-bold counter" data-target="1000" data-increment="10">0</h2>
+                <p class="font-semibold">💰 PROFITABLE STRATEGIES SHARED</p>
+                <p class="mt-2 text-gray-300">Master proven techniques to optimize your trading.</p>
+            </div>
+            <div>
+                <h2 class="text-4xl font-bold counter" data-target="17000" data-increment="100">0</h2>
+                <p class="font-semibold">🎓 TRADERS TRANSFORMED</p>
+                <p class="mt-2 text-gray-300">Join a growing community of traders achieving financial freedom.</p>
+            </div>
+        </div>
+    </div>
+    <section class="py-20 bg-gray-100" id="feedbacks-section">
+        <div class="container mx-auto text-center">
+          <h2 class="text-3xl font-semibold text-gray-900">Feedbacks</h2>
+          <p class="text-gray-600 mt-2">What our clients say about us:</p>
+      
+          <div class="mt-10 grid gap-6 md:grid-cols-3">
+            <div class="p-6 bg-white shadow-lg rounded-lg">
+              <img src="./assets/random person young woman.jpg" alt="User"
+                class="w-16 h-16 mx-auto rounded-full">
+              <p class="mt-4 text-gray-700">Investing with this team has been a game-changer! Highly recommended.</p>
+              <h4 class="mt-2 font-semibold">Olivia Bennett</h4>
+            </div>
+            
+            <div class="p-6 bg-white shadow-lg rounded-lg">
+              <img src="./assets/random person young.jpg" alt="User"
+                class="w-16 h-16 mx-auto rounded-full">
+              <p class="mt-4 text-gray-700">I've never felt more confident in my financial decisions. Amazing support!</p>
+              <h4 class="mt-2 font-semibold">Ryan Caldwell</h4>
+            </div>
+            
+            <div class="p-6 bg-white shadow-lg rounded-lg">
+              <img src="./assets/random person 2.jpg" alt="User"
+                class="w-16 h-16 mx-auto rounded-full">
+              <p class="mt-4 text-gray-700">A knowledgeable team that truly understands smart money strategies.</p>
+              <h4 class="mt-2 font-semibold">Jane Mason Clarke</h4>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
+      <section class="relative py-16" id="more-section">
+        <!-- Фон -->
+        <div class="absolute inset-0 bg-cover bg-center bg-black bg-opacity-20" 
+             style="background-image: url('./assets/footer.jpg'); pointer-events: none;">
+        </div>
+    
+        <!-- Контент -->
+        <div class="relative z-10 text-center p-6 max-w-3xl mx-auto bg-gray-900 bg-opacity-90 rounded-lg shadow-lg">
+            <h2 class="text-red-500 text-3xl md:text-4xl font-bold underline">TRADING BOT FOR $8.99!</h2>
+            <p class="text-white mt-2 text-lg">GET YOUR HELPER BOT!</p>
+    
+            <div class="mt-6">
+                <a class="rounded-full" href="pay.html">
+                    <button class="w-full md:w-auto bg-[#98B5A4] hover:bg-[#162A2C] text-white font-bold py-3 px-6 rounded-full text-lg shadow-md transition-all duration-200">
+                        BUY NOW!
+                    </button>
+                </a>
+            </div>
+        </div>
+    </section>
+      
+
+      <footer class="bg-gray-900 text-white py-10 text-center">
+        <div class="container mx-auto">
+          <img src="./assets/logowhite.png" alt="Trade Plus Logo" class="mx-auto w-16 mb-4">
+          
+          <p class="text-gray-400">Trade Plus © 2020 | All Rights Reserved | Powered by  <a href="https://www.four-x.com" class="text-gray-300 hover:underline">www.four-x.com</a></p>
+      
+           <!-- Footer Links -->
+                    <div class="mt-4">
+                        <a href="javascript:void(0);" class="text-gray-400 hover:text-white mx-2" onclick="openPopup('terms')">Terms and Conditions</a>
+                        <a href="javascript:void(0);" class="text-gray-400 hover:text-white mx-2" onclick="openPopup('privacy')">Privacy</a>
+                        <a href="javascript:void(0);" class="text-gray-400 hover:text-white mx-2" onclick="openPopup('disclaimer')">Disclaimer</a>
+                    </div>
+
+                    <!-- Popup Container -->
+                    <div id="popup" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+                        <div class="bg-white rounded-lg shadow-lg w-3/4 max-w-lg p-6 relative max-h-[80vh] overflow-y-auto">
+                            <button class="absolute top-2 right-2 hover:bg-[#162A2C] bg-[#98B5A4] text-white px-4 py-2 rounded transition-all duration-100" onclick="closePopup()">Close</button>
+                            <h2 id="popup-title" class="text-2xl font-bold mb-4 text-black"></h2>
+                            <p id="popup-content" class="text-black"></p>
+                        </div>
+                    </div> 
+
+                </div>
+            </div>
+         </div>
+      </footer>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const counters = document.querySelectorAll(".counter");
+        const yearCounter = document.querySelector(".counter-year");
+
+        counters.forEach(counter => {
+            let target = parseInt(counter.getAttribute("data-target"));
+            let increment = parseInt(counter.getAttribute("data-increment")) || 10;
+            let steps = parseInt(counter.getAttribute("data-steps")) || Math.ceil(target / increment);
+            let count = 0;
+            let stepSize = Math.ceil(target / steps);
+            let intervalTime = 50; // Скорость анимации (мс)
+
+            function updateCounter() {
+                count += stepSize;
+                if (count >= target) {
+                    count = target;
+                }
+
+                counter.innerText = formatNumber(count);
+
+                if (count < target) {
+                    setTimeout(updateCounter, intervalTime);
+                }
+            }
+
+            updateCounter();
+        });
+
+        function formatNumber(num) {
+            if (num >= 1000) {
+                return Math.floor(num / 1000) + "K+";
+            }
+            return num + "+";
+        }
+
+        // Анимация для года
+        if (yearCounter) {
+            let targetYear = parseInt(yearCounter.getAttribute("data-target"));
+            let currentYear = targetYear - 50; // Начинаем чуть раньше, чтобы был эффект роста
+            let yearStep = Math.ceil((targetYear - currentYear) / 50);
+            let intervalTime = 40;
+
+            function updateYear() {
+                currentYear += yearStep;
+                if (currentYear >= targetYear) {
+                    currentYear = targetYear;
+                }
+
+                yearCounter.innerText = currentYear;
+
+                if (currentYear < targetYear) {
+                    setTimeout(updateYear, intervalTime);
+                }
+            }
+
+            updateYear();
+        }
+
+        startCountdown(); // Запускаем таймер обратного отсчета
+    });
+
+    function startCountdown() {
+        const countdownKey = "countdownEndTime";
+        const countdownDuration = 3 * 60 * 60 * 1000 + 39 * 60 * 1000 + 42 * 1000; // 3h 39m 42s
+
+        function getEndTime() {
+            const storedEndTime = localStorage.getItem(countdownKey);
+            return storedEndTime ? parseInt(storedEndTime) : Date.now() + countdownDuration;
+        }
+
+        function setEndTime(time) {
+            localStorage.setItem(countdownKey, time);
+        }
+
+        let countDownDate = getEndTime();
+        setEndTime(countDownDate);
+
+        const x = setInterval(function () {
+            const now = Date.now();
+            const distance = countDownDate - now;
+
+            if (distance < 0) {
+                countDownDate = Date.now() + countdownDuration; // Reset the countdown
+                setEndTime(countDownDate); // Save new end time
+            }
+
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            const hoursElement = document.getElementById("hours");
+            const minutesElement = document.getElementById("minutes");
+            const secondsElement = document.getElementById("seconds");
+
+            if (hoursElement) hoursElement.innerText = hours.toString().padStart(2, "0");
+            if (minutesElement) minutesElement.innerText = minutes.toString().padStart(2, "0");
+            if (secondsElement) secondsElement.innerText = seconds.toString().padStart(2, "0");
+        }, 1000);
+    }
+
+    // Footer popup texts
+    const popupTexts = {
+        terms: `
+1. Service Description
+We provide digital products (PDF ebooks) and access to an AI-powered Telegram bot. All payments are made in advance. Refunds are only issued at our sole discretion in the case of technical issues.
+
+2. User Rights
+You are granted a non-transferable, personal-use-only license. You may not copy, redistribute, or resell any materials.
+
+3. Telegram Bot Access
+We do not guarantee 24/7 uptime or availability of the Telegram bot. Telegram usage is governed by Telegram’s own terms and policies.
+
+4. Limitation of Liability
+We are not responsible for:
+- your personal or financial decisions;
+- access disruptions or service downtime;
+- any form of financial loss.
+
+5. Changes to Terms
+We reserve the right to update these terms at any time without prior notice.`,
+
+        privacy: `
+We value your privacy. Any personal information you provide (such as name, email address, or payment details) is collected only to fulfill your orders and improve our services.
+
+We do NOT:
+- sell or share your data with third parties;
+- collect unnecessary data;
+- store your data longer than required.
+
+Data collected via our Telegram bot is used only to support functionality and is not stored or shared.`,
+
+        disclaimer: `
+The content provided through our PDF guides, Telegram bot, and website is for educational purposes only and does not constitute financial advice.
+
+We make no guarantees of earnings, results, or outcomes. All decisions made based on our content are done at your own risk.
+
+We are not liable for any losses, damages, or consequences resulting from the use of our materials or tools.
+
+By using our services, you acknowledge and accept this disclaimer.`
+    };
+
+
+    // Function to open footer popups (terms, privacy, disclaimer)
+    function openPopup(type) {
+        const popupElement = document.getElementById('popup');
+        const popupTitleElement = document.getElementById('popup-title');
+        const popupContentElement = document.getElementById('popup-content');
+
+        if (type && popupTitleElement && popupContentElement) {
+            // For footer popups
+            popupTitleElement.innerText = type.charAt(0).toUpperCase() + type.slice(1);
+            popupContentElement.innerText = popupTexts[type] || "No content available";
+        }
+
+        if (popupElement) {
+            popupElement.classList.remove('hidden');
+        }
+    }
+
+    // Function to close all popups
+    function closePopup() {
+        const popupElement = document.getElementById('popup');
+        if (popupElement) {
+            popupElement.classList.add('hidden');
+        }
+        resetForm();
+    }
+
+    // Debug logger
+    function log(message, obj) {
+        console.log(message, obj);
+    }
+    // Update timer function
+    function updateTimer() {
+        // This would be implemented if needed
+        // Currently handled by startCountdown
+    }
+</script>
+ </body>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+</html>
