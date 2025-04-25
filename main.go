@@ -1,29 +1,30 @@
 package main
 
 import (
+	"encoding/json"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
-	"log"
-	"os"
-
-	"path/filepath"
 )
 
-var userState = make(map[int64]string)
-var userData = make(map[int64]map[string]string)
+var (
+	userState = make(map[int64]string)
+	userData  = make(map[int64]map[string]string)
+)
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("Error loading .env file, using environment variables")
-	}
+	_ = godotenv.Load()
 
-	// Получение значения из .env
 	token := os.Getenv("TOKEN")
 	if token == "" {
-		log.Fatal("TOKEN not found in .env")
+		log.Fatal("TOKEN not set in environment")
 	}
 
 	bot, err := tgbotapi.NewBotAPI(token)
@@ -31,7 +32,8 @@ func main() {
 		log.Panic(err)
 	}
 
-	db, err := sqlx.Connect("postgres", "user=postgres password=password dbname=mydb host=localhost port=6345 sslmode=disable")
+	// Соединение с базой
+	db, err := sqlx.Connect("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,7 +44,6 @@ func main() {
 
 	for update := range updates {
 		chatID := update.FromChat().ID
-
 		if _, ok := userData[chatID]; !ok {
 			userData[chatID] = make(map[string]string)
 		}
@@ -58,6 +59,7 @@ func main() {
 			case "awaiting_email":
 				userData[chatID]["email"] = update.Message.Text
 				userState[chatID] = "awaiting_country"
+
 				msg := tgbotapi.NewMessage(chatID, "Select your region:")
 				msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 					tgbotapi.NewInlineKeyboardRow(
@@ -91,10 +93,15 @@ func main() {
 		} else if update.CallbackQuery != nil {
 			data := update.CallbackQuery.Data
 
-			if len(data) > 8 && data[:8] == "country_" {
-				countryCode := data[8:]
+			if strings.HasPrefix(data, "country_") {
+				// Сохраняем email + country в БД
+				countryCode := strings.TrimPrefix(data, "country_")
 				userData[chatID]["country"] = countryCode
-				_, err := db.Exec("INSERT INTO users (email, country) VALUES ($1, $2)", userData[chatID]["email"], countryCode)
+
+				_, err := db.Exec(
+					"INSERT INTO users (email, country) VALUES ($1, $2)",
+					userData[chatID]["email"], countryCode,
+				)
 				if err != nil {
 					bot.Send(tgbotapi.NewMessage(chatID, "❌ Failed to save your data"))
 					log.Println(err)
@@ -103,44 +110,73 @@ func main() {
 					msg := tgbotapi.NewMessage(chatID, "Choose your payment method:")
 					msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 						tgbotapi.NewInlineKeyboardRow(
-							tgbotapi.NewInlineKeyboardButtonURL("💳 Stripe/Crypto", "https://animego.org"),
-							tgbotapi.NewInlineKeyboardButtonURL("🌍 СНГ (Multicard)", "https://animego.org"),
-							tgbotapi.NewInlineKeyboardButtonData("🔧 Developer Test", "pay_check"),
+							tgbotapi.NewInlineKeyboardButtonData("💳 Stripe/Crypto", "pay_stripe"),
 						),
 					)
 					bot.Send(msg)
 				}
+
 			} else {
 				switch data {
-				case "pay_check":
-					userState[chatID] = "awaiting_language"
-					msg := tgbotapi.NewMessage(chatID, "Choose book language:")
-					msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
-						tgbotapi.NewInlineKeyboardRow(
-							tgbotapi.NewInlineKeyboardButtonData("🇩🇪 Deutsch", "DE"),
-							tgbotapi.NewInlineKeyboardButtonData("🇬🇧 English", "EN"),
-						),
-						tgbotapi.NewInlineKeyboardRow(
-							tgbotapi.NewInlineKeyboardButtonData("🇪🇸 Español", "ES"),
-							tgbotapi.NewInlineKeyboardButtonData("🇷🇺 Русский", "RU"),
-							tgbotapi.NewInlineKeyboardButtonData("🇹🇷 Türkçe", "TR"),
-						),
-					)
-					bot.Send(msg)
+				case "pay_stripe":
+					// Запрашиваем URL с учётом страны
+					country := userData[chatID]["country"]
+					url, err := getCheckoutURL(country)
+					if err != nil {
+						bot.Send(tgbotapi.NewMessage(chatID, "❌ Failed to start payment"))
+						log.Println(err)
+					} else {
+						bot.Send(tgbotapi.NewMessage(chatID, "💳 Please pay here:\n"+url))
+						// После — предлагаем выбрать язык
+						msg := tgbotapi.NewMessage(chatID, "Please select book language:")
+						msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
+							tgbotapi.NewInlineKeyboardRow(
+								tgbotapi.NewInlineKeyboardButtonData("🇩🇪 German", "DE"),
+								tgbotapi.NewInlineKeyboardButtonData("🇬🇧 English", "EN"),
+								tgbotapi.NewInlineKeyboardButtonData("🇪🇸 Spanish", "ES"),
+							),
+							tgbotapi.NewInlineKeyboardRow(
+								tgbotapi.NewInlineKeyboardButtonData("🇷🇺 Russian", "RU"),
+								tgbotapi.NewInlineKeyboardButtonData("🇹🇷 Turkish", "TR"),
+							),
+						)
+						bot.Send(msg)
+						userState[chatID] = "awaiting_language"
+					}
+
+				// Обработка выбора языка при отправке PDF
 				case "DE", "EN", "ES", "RU", "TR":
 					userState[chatID] = "awaiting_language"
-					msg := tgbotapi.NewMessage(chatID, "⏳ Please wait, sending the book...")
-					msg.ProtectContent = true
-					bot.Send(msg)
+					waitMsg := tgbotapi.NewMessage(chatID, "⏳ Please wait, sending the book...")
+					waitMsg.ProtectContent = true
+					bot.Send(waitMsg)
 
 					filePath := filepath.Join("pfdSender", "Trade-Plus.Online:"+data+".pdf")
 					doc := tgbotapi.NewDocument(chatID, tgbotapi.FilePath(filePath))
 					doc.Caption = "📘 Your book in: " + data
 					doc.ProtectContent = true
 					bot.Send(doc)
+
 					delete(userState, chatID)
 				}
 			}
 		}
 	}
+}
+
+// getCheckoutURL запрашивает Stripe-сессию у локального сервера
+func getCheckoutURL(countryCode string) (string, error) {
+	resp, err := http.Get("http://localhost:4242/create-checkout-session?country=" + countryCode)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	var res struct {
+		URL string `json:"url"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		return "", err
+	}
+	return res.URL, nil
 }
