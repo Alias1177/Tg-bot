@@ -3,13 +3,12 @@ package main
 //5HTMBMOFR7JVLWKC5VIHYM5DDEOU2V2A
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -383,19 +382,45 @@ func runTelegramBot() {
 				if err != nil {
 					bot.Send(tgbotapi.NewMessage(chatID, "❌ Не удалось сохранить ваши данные"))
 					log.Println(err)
+
 				} else {
-					// Создание URL для Stripe Checkout
-					// Исправление ngrok URL (примерно строка 295)
-					checkoutURL := fmt.Sprintf(
-						"http://localhost:4242/create-checkout-session?email=%s&country=%s&chat_id=%d",
-						url.QueryEscape(userData[chatID]["email"]),
-						url.QueryEscape(countryCode),
-						chatID,
-					)
-					// Отправка сообщения с ссылкой на оплату
-					msg := tgbotapi.NewMessage(
-						chatID,
-						"💳 Пожалуйста, оплатите здесь:\n"+checkoutURL,
+					// Создаем сессию напрямую
+					priceID, ok := countryPriceMap[countryCode]
+					if !ok {
+						priceID = countryPriceMap["ES"]
+					}
+
+					params := &stripe.CheckoutSessionParams{
+						LineItems: []*stripe.CheckoutSessionLineItemParams{
+							{
+								Price:    stripe.String(priceID),
+								Quantity: stripe.Int64(1),
+							},
+						},
+						Mode:          stripe.String(string(stripe.CheckoutSessionModePayment)),
+						SuccessURL:    stripe.String("https://t.me/Trade_Plus_Online_Bot"),
+						CancelURL:     stripe.String("https://t.me/Trade_Plus_Online_Bot"),
+						CustomerEmail: stripe.String(userData[chatID]["email"]),
+						Metadata: map[string]string{
+							"email":   userData[chatID]["email"],
+							"country": countryCode,
+							"chat_id": strconv.FormatInt(chatID, 10),
+						},
+					}
+
+					s, err := session.New(params)
+					if err != nil {
+						bot.Send(tgbotapi.NewMessage(chatID, "❌ Ошибка создания сессии оплаты"))
+						log.Println(err)
+						return
+					}
+
+					// Отправляем прямую ссылку на Stripe Checkout
+					msg := tgbotapi.NewMessage(chatID, "💳 Пожалуйста, нажмите кнопку ниже для оплаты:")
+					msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
+						tgbotapi.NewInlineKeyboardRow(
+							tgbotapi.NewInlineKeyboardButtonURL("🔒 Оплатить заказ", s.URL),
+						),
 					)
 					bot.Send(msg)
 				}
