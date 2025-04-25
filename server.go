@@ -3,14 +3,6 @@ package main
 //5HTMBMOFR7JVLWKC5VIHYM5DDEOU2V2A
 import (
 	"encoding/json"
-	"io"
-	"log"
-	"net/http"
-	"os"
-	"path/filepath"
-	"strconv"
-	"strings"
-
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
@@ -18,6 +10,14 @@ import (
 	"github.com/stripe/stripe-go/v82"
 	"github.com/stripe/stripe-go/v82/checkout/session"
 	"github.com/stripe/stripe-go/v82/webhook"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 var (
@@ -34,7 +34,6 @@ var (
 	botChan chan PaymentNotification
 )
 
-// Структура для хранения данных пользователя и платежа
 type User struct {
 	ID      int64  `db:"id"`
 	Email   string `db:"email"`
@@ -42,7 +41,6 @@ type User struct {
 	ChatID  int64  `db:"chat_id"`
 }
 
-// Структура для платежей
 type Payment struct {
 	ID          string `db:"id"`
 	UserID      int64  `db:"user_id"`
@@ -53,12 +51,50 @@ type Payment struct {
 	CompletedAt int64  `db:"completed_at"`
 }
 
-// Структура для уведомлений между сервисами
 type PaymentNotification struct {
 	ChatID    int64
 	Email     string
 	SessionID string
 	Status    string
+	Amount    int64 // Новое поле
+}
+
+// Улучшенная валидация email
+func isValidEmail(email string) bool {
+	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	return emailRegex.MatchString(email)
+}
+
+func insertPayment(db *sqlx.DB, userID int64, sessionID, status string, amount int64) error {
+	query := `
+        INSERT INTO payments (
+            user_id, 
+            status, 
+            session_id, 
+            amount,
+            created_at,
+            completed_at
+        ) VALUES (
+            $1, 
+            $2, 
+            $3, 
+            $4,
+            extract(epoch from now()),
+            CASE WHEN $2::varchar = 'completed' THEN extract(epoch from now()) ELSE NULL END
+        )
+        ON CONFLICT (session_id) DO UPDATE SET
+            status = EXCLUDED.status,
+            completed_at = CASE WHEN EXCLUDED.status::varchar = 'completed' THEN extract(epoch from now()) ELSE payments.completed_at END`
+
+	_, err := db.Exec(query, userID, status, sessionID, amount)
+
+	if err != nil {
+		log.Printf("Ошибка вставки платежа: %v", err)
+		return err
+	}
+
+	log.Printf("Платеж добавлен: UserID=%d, SessionID=%s, Status=%s", userID, sessionID, status)
+	return nil
 }
 
 func main() {
@@ -111,23 +147,21 @@ func main() {
 
 // Инициализация базы данных
 func initDB() {
-	// Создание таблицы пользователей, если не существует
 	db.MustExec(`
 		CREATE TABLE IF NOT EXISTS users (
 			id SERIAL PRIMARY KEY,
-			email TEXT NOT NULL,
+			email TEXT NOT NULL UNIQUE,
 			country VARCHAR NOT NULL,
 			chat_id BIGINT NOT NULL
 		)
 	`)
 
-	// Создание таблицы платежей, если не существует
 	db.MustExec(`
 		CREATE TABLE IF NOT EXISTS payments (
 			id VARCHAR PRIMARY KEY,
 			user_id BIGINT REFERENCES users(id),
 			status VARCHAR NOT NULL,
-			session_id VARCHAR NOT NULL,
+			session_id VARCHAR NOT NULL UNIQUE,
 			amount BIGINT NOT NULL,
 			created_at BIGINT NOT NULL,
 			completed_at BIGINT
@@ -241,6 +275,7 @@ func handleStripeWebhook(w http.ResponseWriter, r *http.Request) {
 			Email:     email,
 			SessionID: session.ID,
 			Status:    "completed",
+			Amount:    session.AmountTotal / 100, // Преобразование центов в основную валюту
 		}
 		botChan <- notification
 
@@ -253,7 +288,6 @@ func handleStripeWebhook(w http.ResponseWriter, r *http.Request) {
 // Обработчик уведомлений о платежах для Telegram бота
 func handlePaymentNotifications() {
 	for notification := range botChan {
-		// Получение информации о пользователе из базы данных
 		var user User
 		err := db.Get(&user, "SELECT * FROM users WHERE email = $1", notification.Email)
 		if err != nil {
@@ -261,13 +295,10 @@ func handlePaymentNotifications() {
 			continue
 		}
 
-		// Обновление статуса платежа в базе данных
-		_, err = db.Exec(
-			"UPDATE payments SET status = $1, completed_at = extract(epoch from now()) WHERE session_id = $2",
-			notification.Status, notification.SessionID,
-		)
+		// Попытка вставки платежа
+		err = insertPayment(db, user.ID, notification.SessionID, notification.Status, notification.Amount)
 		if err != nil {
-			log.Printf("Ошибка обновления платежа: %v", err)
+			log.Printf("Не удалось сохранить платеж: %v", err)
 		}
 
 		// Отправка сообщения пользователю
@@ -289,7 +320,7 @@ func handlePaymentNotifications() {
 
 // Функция для запуска Telegram бота
 func runTelegramBot() {
-	// Похожая логика как в основном main.go, но с обновлениями
+	// В функции runTelegramBot обновим обработку выбора страны
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 	updates := bot.GetUpdatesChan(u)
@@ -309,28 +340,26 @@ func runTelegramBot() {
 			chatID = update.CallbackQuery.Message.Chat.ID
 		}
 
-		// Инициализация данных пользователя, если они еще не существуют
 		if _, ok := userData[chatID]; !ok {
 			userData[chatID] = make(map[string]string)
 		}
 
-		// Обработка команд
+		// Основная логика обработки без существенных изменений
+		// Единственное - использовать insertUser вместо прямого SQL
 		if update.Message != nil && update.Message.IsCommand() {
 			if update.Message.Command() == "start" {
 				userState[chatID] = "awaiting_email"
 				bot.Send(tgbotapi.NewMessage(chatID, "Пожалуйста, введите ваш email:"))
 			}
 		} else if update.Message != nil {
-			// Обработка текстовых сообщений на основе состояния пользователя
 			switch userState[chatID] {
 			case "awaiting_email":
 				email := update.Message.Text
 
-				// Базовая валидация email
-				if !strings.Contains(email, "@") || !strings.Contains(email, ".") {
+				if !isValidEmail(email) {
 					msg := tgbotapi.NewMessage(chatID, "❌ Пожалуйста, введите корректный email в формате example@domain.com")
 					bot.Send(msg)
-					continue // Пропускаем дальнейшую обработку
+					continue
 				}
 
 				userData[chatID]["email"] = email

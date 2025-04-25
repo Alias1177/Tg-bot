@@ -5,11 +5,11 @@ CREATE TABLE IF NOT EXISTS users (
                                      chat_id BIGINT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS payments (
-                                        id VARCHAR PRIMARY KEY,
+                                        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
                                         user_id BIGINT REFERENCES users(id),
-                                        status VARCHAR NOT NULL,
-                                        session_id VARCHAR NOT NULL,
-                                        amount BIGINT NOT NULL,
-                                        created_at BIGINT NOT NULL,
-                                        completed_at BIGINT
-)
+    status VARCHAR NOT NULL CHECK (status IN ('pending', 'completed', 'failed')), 
+    session_id VARCHAR NOT NULL UNIQUE,
+    amount BIGINT NOT NULL DEFAULT 0,
+    created_at BIGINT NOT NULL DEFAULT extract(epoch from now()),
+    completed_at BIGINT
+    );
