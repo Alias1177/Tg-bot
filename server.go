@@ -1,6 +1,5 @@
 package main
 
-//5HTMBMOFR7JVLWKC5VIHYM5DDEOU2V2A
 import (
 	"encoding/json"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -39,16 +38,6 @@ type User struct {
 	Email   string `db:"email"`
 	Country string `db:"country"`
 	ChatID  int64  `db:"chat_id"`
-}
-
-type Payment struct {
-	ID          string `db:"id"`
-	UserID      int64  `db:"user_id"`
-	Status      string `db:"status"`
-	SessionID   string `db:"session_id"`
-	Amount      int64  `db:"amount"`
-	CreatedAt   int64  `db:"created_at"`
-	CompletedAt int64  `db:"completed_at"`
 }
 
 type PaymentNotification struct {

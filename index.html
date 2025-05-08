@@ -14,9 +14,13 @@
         }
     </style>
 <body class="bg-gradient-to-br from-[#98b5a4] to-[#162A2C] text-center">
-
+<div class="w-full bg-gradient-to-r from-green-800 via-green-900 to-green-700 text-white text-center py-2 fixed top-0 left-0 z-50">
+    <p class="text-sm md:text-base font-semibold">
+        🎉 Special Offer Ending Soon! Hurry up! 🎉
+    </p>
+</div>
 <!-- Navbar Section (Now Below Countdown) -->
-<nav class="text-black py-2 w-full px-4 md:px-12 pb-0 relative flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+<nav class="text-black py-8 w-full px-4 md:px-12 pb-0 relative flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
     <!-- Logo -->
     <div class="w-auto h-auto">
         <img src="./assets/logowhite.png" alt="Banner" class="h-[100px] w-[100px] md:h-[150px] md:w-[150px]">
@@ -329,7 +333,7 @@
     
         <!-- Контент -->
         <div class="relative z-10 text-center p-6 max-w-3xl mx-auto bg-gray-900 bg-opacity-90 rounded-lg shadow-lg">
-            <h2 class="text-red-500 text-3xl md:text-4xl font-bold underline">TRADING BOT FOR $8.99!</h2>
+            <h2 class="text-red-500 text-3xl md:text-4xl font-bold underline">TRADING BOT FOR $9.99!</h2>
             <p class="text-white mt-2 text-lg">GET YOUR HELPER BOT!</p>
     
             <div class="mt-6">
@@ -474,43 +478,52 @@
     const popupTexts = {
         terms: `
 1. Service Description
-We provide digital products (PDF ebooks) and access to an AI-powered Telegram bot. All payments are made in advance. Refunds are only issued at our sole discretion in the case of technical issues.
+We provide digital products (PDF ebooks) and access to AI-powered Telegram bots. All payments are made in advance and are non-refundable unless a proven technical failure occurs, as determined solely by us.
 
 2. User Rights
-You are granted a non-transferable, personal-use-only license. You may not copy, redistribute, or resell any materials.
+You are granted a limited, non-exclusive, non-transferable license for personal use only. You may not reproduce, distribute, modify, or resell any of the content or services provided.
 
 3. Telegram Bot Access
-We do not guarantee 24/7 uptime or availability of the Telegram bot. Telegram usage is governed by Telegram’s own terms and policies.
+We do not guarantee continuous or uninterrupted access to the Telegram bot. Functionality may be affected by external platform limitations or technical maintenance. Usage of the bot is subject to Telegram Inc.’s terms of service and policies.
 
 4. Limitation of Liability
 We are not responsible for:
 - your personal or financial decisions;
-- access disruptions or service downtime;
-- any form of financial loss.
+- access disruptions, outages, or service interruptions;
+- any form of financial or non-financial loss.
 
-5. Changes to Terms
-We reserve the right to update these terms at any time without prior notice.`,
+All content is provided “as is” without warranties of any kind, either express or implied.
+
+5. Jurisdiction and Legal
+Any disputes or claims arising from your use of our services shall be governed by the jurisdiction of the state in which our company is registered.
+
+6. Changes to Terms
+We reserve the right to update these terms at any time without prior notice. Continued use of our services constitutes your acceptance of the modified terms.
+
+7. By proceeding with the payment, you confirm that you have read, understood, and agree to our Terms of Service, Privacy Policy, and Disclaimer. You acknowledge that all purchases are final and that you assume full responsibility for any actions or decisions made based on the content or services provided.
+`,
 
         privacy: `
-We value your privacy. Any personal information you provide (such as name, email address, or payment details) is collected only to fulfill your orders and improve our services.
+We value your privacy. Any personal information you provide (such as name, email, or payment details) is collected solely to fulfill your orders and enhance service delivery.
 
 We do NOT:
 - sell or share your data with third parties;
-- collect unnecessary data;
-- store your data longer than required.
+- collect more data than necessary;
+- store your data longer than required for business or legal reasons.
 
-Data collected via our Telegram bot is used only to support functionality and is not stored or shared.`,
+Any data collected via our Telegram bot is used only for functionality and is never shared or stored beyond what is required.
+`,
 
         disclaimer: `
-The content provided through our PDF guides, Telegram bot, and website is for educational purposes only and does not constitute financial advice.
+All materials provided through our PDF guides, Telegram bots, and website are for informational and educational purposes only. They do not constitute financial, investment, or medical advice.
 
-We make no guarantees of earnings, results, or outcomes. All decisions made based on our content are done at your own risk.
+We are not licensed financial or healthcare professionals. You are solely responsible for any decisions made based on the content we provide.
 
-We are not liable for any losses, damages, or consequences resulting from the use of our materials or tools.
+We make no guarantees of earnings, results, or outcomes. Use of our services is entirely at your own risk.
 
-By using our services, you acknowledge and accept this disclaimer.`
+By accessing or using our services, you accept full responsibility and waive any legal claims against our business, team, or platform.
+`
     };
-
 
     // Function to open footer popups (terms, privacy, disclaimer)
     function openPopup(type) {
