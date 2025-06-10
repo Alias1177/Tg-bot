@@ -1,0 +1,43 @@
+name: Simple Deploy
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          cd ${{ secrets.PROJECT_PATH }}
+          git pull
+          cd Tg-bot
+          
+          # Создаем .env файл из секрета
+          cat > .env << 'EOF'
+          ${{ secrets.ENV_FILE }}
+          EOF
+          
+          # Получаем SERVER_IP из .env для SSL сертификатов
+          source .env
+          
+          # Создаем SSL сертификаты если их нет
+          mkdir -p certs
+          if [ ! -f certs/cert.pem ] || [ ! -f certs/key.pem ]; then
+            openssl req -x509 -newkey rsa:2048 -keyout certs/key.pem -out certs/cert.pem \
+              -days 365 -nodes -subj "/CN=$SERVER_IP" \
+              -addext "subjectAltName=IP:$SERVER_IP,IP:127.0.0.1,DNS:localhost"
+          fi
+          
+          docker-compose down
+          docker-compose build --no-cache
+          docker-compose up -d
+          echo "🎉 Деплой завершен! Сайт: https://$SERVER_IP:$SERVER_PORT" 

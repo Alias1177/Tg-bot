@@ -2,13 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/jmoiron/sqlx"
-	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
-	"github.com/stripe/stripe-go/v82"
-	"github.com/stripe/stripe-go/v82/checkout/session"
-	"github.com/stripe/stripe-go/v82/webhook"
 	"io"
 	"log"
 	"net/http"
@@ -17,16 +10,24 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/jmoiron/sqlx"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
+	"github.com/stripe/stripe-go/v82"
+	"github.com/stripe/stripe-go/v82/checkout/session"
+	"github.com/stripe/stripe-go/v82/webhook"
 )
 
 var (
 	countryPriceMap = map[string]string{
-		"ES":  "price_1RHs4cBQsV5j2DYhuZ97WR7n",
-		"CA":  "price_1RHs4cBQsV5j2DYhuZ97WR7n",
-		"US":  "price_1RHs4cBQsV5j2DYhuZ97WR7n",
-		"TR":  "price_1RHs4cBQsV5j2DYhuZ97WR7n",
-		"CIS": "price_1RHs4cBQsV5j2DYhuZ97WR7n",
-		"AS":  "price_1RHs4cBQsV5j2DYhuZ97WR7n",
+		"ES":  "price_1RYU9RGLgFy5Oc1p9HFfnZtz",
+		"CA":  "price_1RYU9RGLgFy5Oc1p9HFfnZtz",
+		"US":  "price_1RYU9RGLgFy5Oc1p9HFfnZtz",
+		"TR":  "price_1RYU9RGLgFy5Oc1p9HFfnZtz",
+		"CIS": "price_1RYU9RGLgFy5Oc1p9HFfnZtz",
+		"AS":  "price_1RYU9RGLgFy5Oc1p9HFfnZtz",
 	}
 	db      *sqlx.DB
 	bot     *tgbotapi.BotAPI
@@ -121,17 +122,17 @@ func main() {
 	go handlePaymentNotifications()
 
 	// HTTP сервер для Stripe Webhook и создания сессий
-	http.HandleFunc("/webhook", handleStripeWebhook)
+	http.HandleFunc("/webhookBook", handleStripeWebhook)
 	http.HandleFunc("/create-checkout-session", handleCreateSession)
 	http.Handle("/", http.FileServer(http.Dir("public")))
 
 	// Запуск Telegram бота в отдельной горутине
 	go runTelegramBot()
 
-	// Запуск HTTP сервера
-	addr := "localhost:4242"
-	log.Printf("Stripe Checkout сервер запущен на %s", addr)
-	log.Fatal(http.ListenAndServe(addr, nil))
+	// Запуск HTTPS сервера
+	addr := ":8443"
+	log.Printf("HTTPS сервер запущен на https://localhost%s", addr)
+	log.Fatal(http.ListenAndServeTLS(addr, "cert.pem", "key.pem", nil))
 }
 
 // Инициализация базы данных
@@ -188,8 +189,19 @@ func handleCreateSession(w http.ResponseWriter, r *http.Request) {
 	metadata["country"] = country
 	metadata["chat_id"] = chatID
 
-	// В функции handleCreateSession (примерно строка 174)
-	domain := "http://localhost:4242"
+	// Получаем IP сервера из переменной окружения или используем localhost
+	var domain string
+	serverIP := os.Getenv("SERVER_IP")
+	serverPort := os.Getenv("SERVER_PORT")
+	if serverPort == "" {
+		serverPort = "8443"
+	}
+
+	if serverIP == "" {
+		domain = "https://localhost:" + serverPort
+	} else {
+		domain = "https://" + serverIP + ":" + serverPort
+	}
 	params := &stripe.CheckoutSessionParams{
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 			{
