@@ -303,16 +303,16 @@ func handlePaymentNotifications() {
 		}
 
 		// Отправка сообщения пользователю
-		msg := tgbotapi.NewMessage(user.ChatID, "✅ Ваш платеж успешно обработан! Пожалуйста, выберите язык книги:")
+		msg := tgbotapi.NewMessage(user.ChatID, "✅ Your payment has been successfully processed! Please choose the book language:")
 		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("🇩🇪 Немецкий", "DE"),
-				tgbotapi.NewInlineKeyboardButtonData("🇬🇧 Английский", "EN"),
-				tgbotapi.NewInlineKeyboardButtonData("🇪🇸 Испанский", "ES"),
+				tgbotapi.NewInlineKeyboardButtonData("🇩🇪 German", "DE"),
+				tgbotapi.NewInlineKeyboardButtonData("🇬🇧 English", "EN"),
+				tgbotapi.NewInlineKeyboardButtonData("🇪🇸 Spanish", "ES"),
 			),
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("🇷🇺 Русский", "RU"),
-				tgbotapi.NewInlineKeyboardButtonData("🇹🇷 Турецкий", "TR"),
+				tgbotapi.NewInlineKeyboardButtonData("🇷🇺 Russian", "RU"),
+				tgbotapi.NewInlineKeyboardButtonData("🇹🇷 Turkish", "TR"),
 			),
 		)
 		bot.Send(msg)
@@ -350,7 +350,7 @@ func runTelegramBot() {
 		if update.Message != nil && update.Message.IsCommand() {
 			if update.Message.Command() == "start" {
 				userState[chatID] = "awaiting_email"
-				bot.Send(tgbotapi.NewMessage(chatID, "Пожалуйста, введите ваш email:"))
+				bot.Send(tgbotapi.NewMessage(chatID, "Please enter your email:"))
 			}
 		} else if update.Message != nil {
 			switch userState[chatID] {
@@ -358,7 +358,7 @@ func runTelegramBot() {
 				email := update.Message.Text
 
 				if !isValidEmail(email) {
-					msg := tgbotapi.NewMessage(chatID, "❌ Пожалуйста, введите корректный email в формате example@domain.com")
+					msg := tgbotapi.NewMessage(chatID, "❌ Please enter a valid email in the format example@domain.com")
 					bot.Send(msg)
 					continue
 				}
@@ -366,17 +366,17 @@ func runTelegramBot() {
 				userData[chatID]["email"] = email
 				userState[chatID] = "awaiting_country"
 
-				msg := tgbotapi.NewMessage(chatID, "Выберите ваш регион:")
+				msg := tgbotapi.NewMessage(chatID, "Choose your region:")
 				msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 					tgbotapi.NewInlineKeyboardRow(
-						tgbotapi.NewInlineKeyboardButtonData("🇪🇺 ЕС", "country_ES"),
-						tgbotapi.NewInlineKeyboardButtonData("🇨🇦 Канада", "country_CA"),
-						tgbotapi.NewInlineKeyboardButtonData("🇺🇸 США", "country_US"),
+						tgbotapi.NewInlineKeyboardButtonData("🇪🇺 EU", "country_ES"),
+						tgbotapi.NewInlineKeyboardButtonData("🇨🇦 Canada", "country_CA"),
+						tgbotapi.NewInlineKeyboardButtonData("🇺🇸 USA", "country_US"),
 					),
 					tgbotapi.NewInlineKeyboardRow(
-						tgbotapi.NewInlineKeyboardButtonData("🇹🇷 Турция", "country_TR"),
-						tgbotapi.NewInlineKeyboardButtonData("🌍 СНГ", "country_CIS"),
-						tgbotapi.NewInlineKeyboardButtonData("🌏 Азия", "country_AS"),
+						tgbotapi.NewInlineKeyboardButtonData("🇹🇷 Turkey", "country_TR"),
+						tgbotapi.NewInlineKeyboardButtonData("🌍 CIS", "country_CIS"),
+						tgbotapi.NewInlineKeyboardButtonData("🌏 Asia", "country_AS"),
 					),
 				)
 				bot.Send(msg)
@@ -386,13 +386,13 @@ func runTelegramBot() {
 
 			if data == "DE" || data == "EN" || data == "ES" || data == "RU" || data == "TR" {
 				// Отправка PDF файла на выбранном языке
-				waitMsg := tgbotapi.NewMessage(chatID, "⏳ Пожалуйста, подождите, отправляю книгу...")
+				waitMsg := tgbotapi.NewMessage(chatID, "⏳ Please wait, sending your book...")
 				waitMsg.ProtectContent = true
 				bot.Send(waitMsg)
 
 				filePath := filepath.Join("pfdSender", "Trade-Plus.Online:"+data+".pdf")
 				doc := tgbotapi.NewDocument(chatID, tgbotapi.FilePath(filePath))
-				doc.Caption = "📘 Ваша книга на: " + data
+				doc.Caption = "📘 Your book in: " + data
 				doc.ProtectContent = true
 				bot.Send(doc)
 
@@ -410,7 +410,7 @@ func runTelegramBot() {
 				).Scan(&userID)
 
 				if err != nil {
-					bot.Send(tgbotapi.NewMessage(chatID, "❌ Не удалось сохранить ваши данные"))
+					bot.Send(tgbotapi.NewMessage(chatID, "❌ Failed to save your data"))
 					log.Println(err)
 
 				} else {
@@ -440,16 +440,16 @@ func runTelegramBot() {
 
 					s, err := session.New(params)
 					if err != nil {
-						bot.Send(tgbotapi.NewMessage(chatID, "❌ Ошибка создания сессии оплаты"))
+						bot.Send(tgbotapi.NewMessage(chatID, "❌ Error creating payment session"))
 						log.Println(err)
 						return
 					}
 
 					// Отправляем прямую ссылку на Stripe Checkout
-					msg := tgbotapi.NewMessage(chatID, "💳 Пожалуйста, нажмите кнопку ниже для оплаты:")
+					msg := tgbotapi.NewMessage(chatID, "💳 Please click the button below to make payment:")
 					msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 						tgbotapi.NewInlineKeyboardRow(
-							tgbotapi.NewInlineKeyboardButtonURL("🔒 Оплатить заказ", s.URL),
+							tgbotapi.NewInlineKeyboardButtonURL("🔒 Pay Order", s.URL),
 						),
 					)
 					bot.Send(msg)
